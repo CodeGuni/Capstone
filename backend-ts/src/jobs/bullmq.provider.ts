@@ -1,15 +1,24 @@
 import { Queue, Worker } from "bullmq";
 import IORedis from "ioredis";
-const connection = new IORedis(
-  process.env.REDIS_URL ?? "redis://localhost:6379"
-);
+
+const redisUrl = process.env.REDIS_URL ?? "redis://localhost:6379";
+
+export const connection = new IORedis(redisUrl, {
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+});
+
 export const HelloQueue = new Queue("hello", { connection });
+
 export function startHelloWorker() {
-  const w = new Worker(
+  const worker = new Worker(
     "hello",
-    async (job) => ({ echo: `Hello ${job.data.name ?? "world"}` }),
+    async (job) => {
+      return { message: `Hello ${job.data?.name ?? "world"}` };
+    },
     { connection }
   );
-  w.on("completed", (j) => console.log("hello done:", j.id));
-  w.on("failed", (j, e) => console.error("hello failed:", j?.id, e.message));
+
+  worker.on("completed", (j) => console.log("hello done:", j.id));
+  worker.on("failed", (j, e) => console.error("hello failed:", j?.id, e));
 }

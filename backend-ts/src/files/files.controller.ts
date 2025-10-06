@@ -1,20 +1,21 @@
-import { Controller, Post, Body } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { createUploadSAS } from "./azure";
+import { Body, Controller, HttpCode, HttpStatus, Inject, Post, BadRequestException } from '@nestjs/common';
+import { FilesService } from './files.service';
 
-@ApiTags("files")
-@ApiBearerAuth()
-@Controller("files")
+@Controller('files')
 export class FilesController {
-  @Post("presign")
-  async presign(@Body() dto: { mime: string; bytes: number }) {
-    if (dto.bytes > 10 * 1024 * 1024)
-      throw new Error("File too large (10MB max)");
-    const ext = dto.mime.split("/")[1] || "bin";
-    const key = `uploads/${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${ext}`;
-    const sas = await createUploadSAS(key, dto.mime);
-    return { key, ...sas };
+  constructor(@Inject(FilesService) private readonly files: FilesService) {}
+
+  @Post('presign')
+  @HttpCode(HttpStatus.OK)
+  async presign(@Body() body: { filename: string; contentType: string }) {
+    console.log('[files/presign] body =', body);
+    try {
+      const res = await this.files.presign(body.filename, body.contentType);
+      console.log('[files/presign] ok');
+      return res;
+    } catch (e: any) {
+      console.error('AZURE PRESIGN ERROR:', e?.message);
+      throw new BadRequestException(e?.message || 'presign failed');
+    }
   }
 }

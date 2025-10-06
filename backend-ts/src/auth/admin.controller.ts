@@ -1,17 +1,14 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { AuthGuard } from "@nestjs/passport";
-import { Roles } from "../auth/roles.decorator";
-import { RolesGuard } from "../auth/roles.guard";
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Roles } from './roles.decorator';
+import { RolesGuard } from './roles.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
-@ApiTags("admin")
-@ApiBearerAuth()
-@Controller("admin")
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@Controller('admin')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class AdminController {
-  @Get("ping")
-  @Roles("admin")
+  @Get('ping')
+  @Roles('admin')
   ping() {
-    return { ok: true, role: "admin" };
+    return { ok: true, who: 'admin' };
   }
 }

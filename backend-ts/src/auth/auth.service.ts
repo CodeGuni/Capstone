@@ -1,45 +1,55 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import { JwtService } from "@nestjs/jwt";
-import * as bcrypt from "bcrypt";
+import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwt: JwtService) {}
-
-  async register(dto: {
-    email: string;
-    password: string;
-    role?: "admin" | "user";
-  }) {
-    const hash = await bcrypt.hash(dto.password, 10);
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email.toLowerCase(),
-        passwordHash: hash,
-        role: dto.role ?? "user",
-      },
-    });
-    return { id: user.id, email: user.email, role: user.role };
-  }
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(JwtService) private readonly jwt: JwtService,
+  ) {}
 
   async login(dto: { email: string; password: string }) {
-    const u = await this.prisma.user.findUnique({
-      where: { email: dto.email.toLowerCase() },
-    });
-    if (!u || !(await bcrypt.compare(dto.password, u.passwordHash))) {
-      throw new UnauthorizedException("Invalid credentials");
+    try {
+      const email = dto.email.toLowerCase();
+
+      // some PrismaService extend PrismaClient, others wrap it; support both:
+      const client: any = (this.prisma as any).user ? (this.prisma as any) : (this.prisma as any).client;
+
+      const user = await client.user.findUnique({ where: { email } });
+      if (!user?.passwordHash) throw new UnauthorizedException('Invalid credentials');
+
+      const ok = await bcrypt.compare(dto.password, user.passwordHash);
+      if (!ok) throw new UnauthorizedException('Invalid credentials');
+
+      const token = await this.jwt.signAsync(
+        { sub: user.id, role: user.role },
+        {
+          algorithm: 'HS256',
+          secret: process.env.JWT_SECRET,
+          issuer: 'gateway',
+          audience: 'web',
+          expiresIn: '15m',
+        },
+      );
+      return { accessToken: token };
+    } catch (e: any) {
+      console.error('LOGIN ERROR:', e?.message);
+      throw e;
     }
-    const accessToken = await this.jwt.signAsync(
-      { sub: u.id, role: u.role },
-      {
-        algorithm: "RS256",
-        issuer: "gateway",
-        audience: "web",
-        expiresIn: "15m",
-        privateKey: process.env.JWT_PRIVATE,
-      }
-    );
-    return { accessToken };
+  }
+
+  async register(dto: { email: string; password: string; role?: 'admin' | 'user' }) {
+    const email = dto.email.toLowerCase();
+    const hash = await bcrypt.hash(dto.password, 10);
+    const client: any = (this.prisma as any).user ? (this.prisma as any) : (this.prisma as any).client;
+
+    const user = await client.user.upsert({
+      where: { email },
+      update: {},
+      create: { email, passwordHash: hash, role: dto.role ?? 'user' },
+    });
+    return { id: user.id, email: user.email, role: user.role };
   }
 }

@@ -13,7 +13,7 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true })
   );
   app.setGlobalPrefix("api");
-
+/*
   // Swagger
   const cfg = new DocumentBuilder()
     .setTitle("AI Fashion Studio – Gateway")
@@ -26,6 +26,8 @@ async function bootstrap() {
     .getHttpAdapter()
     .getInstance()
     .get("/api/docs-json", (_req, res) => res.send(doc));
+
+    */
 
   await app.listen(process.env.PORT ?? 3000, "0.0.0.0");
 }
