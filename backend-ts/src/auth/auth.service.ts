@@ -27,9 +27,10 @@ export class AuthService {
     const u = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
-    if (!u || !(await bcrypt.compare(dto.password, u.passwordHash)))
+    if (!u || !(await bcrypt.compare(dto.password, u.passwordHash))) {
       throw new UnauthorizedException("Invalid credentials");
-    const token = await this.jwt.signAsync(
+    }
+    const accessToken = await this.jwt.signAsync(
       { sub: u.id, role: u.role },
       {
         algorithm: "RS256",
@@ -39,6 +40,6 @@ export class AuthService {
         privateKey: process.env.JWT_PRIVATE,
       }
     );
-    return { accessToken: token };
+    return { accessToken };
   }
 }
