@@ -25,7 +25,7 @@ Before you begin, ensure you have the following installed:
 1. **Clone the Repository**:
     
     git clone https://github.com/codeguni/Capstone.git
-    cd Capstone/backend
+    cd Capstone/backend-ts
 
 
 2. **Install Dependencies**:
