@@ -1,4 +1,4 @@
-# Capstone Project – AI Fashion Computer Vision Backend
+# Capstone Project – AI Fashion Computer Vision
 
 Welcome to the **Computer Vision backend** of our **AI Fashion Capstone Project**.  
 This service gives the application its “visual intelligence”: it recognises clothing items, finds similar styles, removes backgrounds from photos, and powers our prototype virtual try‑on feature.  
