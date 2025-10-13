@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+venv/
+env/
+data/images/
+embeddings/
+*.npy
+*.bin
+*.jpg
+*.png
+.DS_Store
+Thumbs.db
+temp*

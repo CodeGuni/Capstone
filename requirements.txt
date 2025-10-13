@@ -1,0 +1,11 @@
+torch
+torchvision
+clip-anytorch
+faiss-cpu
+fastapi
+uvicorn
+Pillow
+numpy
+pandas
+rembg
+python-multipart
