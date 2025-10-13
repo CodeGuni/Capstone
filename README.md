@@ -32,7 +32,7 @@ Before you start, make sure the following are installed:
 
 1. Clone the Repository
 
-git clone https://github.com/<YourTeam>/ai-fashion-capstone.git
+git clone (https://github.com/codeguni/Capstone.git )
 cd ai-fashion-capstone
 
 2. Install Dependencies
