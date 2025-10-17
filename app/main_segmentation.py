@@ -4,10 +4,16 @@ from app.segmentation_service import segment_garment
 
 app = FastAPI(title="AI‑Fashion Segmentation Microservice")
 
+#  SIMPLE HEALTH CHECK
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @app.post("/segmentation")
 async def segmentation(file: UploadFile):
     img_bytes = await file.read()
-    result = segment_garment(img_bytes)
+    segmented = segment_garment(img_bytes)
     output_path = f"segmented_{file.filename}"
-    result.save(output_path)
+    segmented.save(output_path)
+
     return FileResponse(output_path, media_type="image/png")
