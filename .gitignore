@@ -1,1 +1,97 @@
+<<<<<<< HEAD
+############################
+# OS / Editor junk
+############################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+############################
+# Env & secrets
+############################
+.env
+.env.*
+backend-ts/.env
+services/rec_svc/.env
+
+############################
+# Node / TypeScript (backend-ts)
+############################
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# build outputs
+dist/
+build/
+coverage/
+.tmp/
+.cache/
+
+# Nest/TS
+*.tsbuildinfo
+
+############################
+# Python (services/rec_svc)
+############################
+# virtual envs
+.venv/
+venv/
+services/rec_svc/.venv/
+services/rec_svc/venv/
+
+# bytecode & caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# poetry/pip artifacts
+pip-wheel-metadata/
+.eggs/
+*.egg-info/
+
+# data/model caches (local only)
+services/rec_svc/.cache/
+services/rec_svc/.huggingface/
+services/rec_svc/.torch/
+services/rec_svc/.local/
+services/rec_svc/data/**/*
+!services/rec_svc/data/.gitkeep
+
+############################
+# Docker / Compose
+############################
+*.log
+docker-compose.override.yml
+# local named volumes (if you use host dirs)
+pgdata/
+redisdata/
+
+############################
+# Prisma
+############################
+# (schema & migrations should be committed; generated client lives in node_modules)
+prisma/dev.db
+prisma/dev.db-journal
+
+############################
+# Misc
+############################
+*.tgz
+*.tar
+*.zip
+=======
+node_modules/
+>>>>>>> origin/main
