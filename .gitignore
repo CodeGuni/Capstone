@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ############################
 # OS / Editor junk
 ############################
@@ -91,3 +92,6 @@ prisma/dev.db-journal
 *.tgz
 *.tar
 *.zip
+=======
+node_modules/
+>>>>>>> origin/main

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import axios from "axios";
 
 const RECOMMENDER_URL = process.env.REC_SVC_URL || "http://localhost:8001";
@@ -35,4 +36,17 @@ export async function getImageRecommendations(imageUrl: string, k = 5) {
     console.error("❌ Error calling rec_svc (image):", error.message);
     return [];
   }
+=======
+export async function recSearchImage(
+  baseUrl: string,
+  payload: { imageKey: string; topK?: number }
+) {
+  const r = await fetch(`${baseUrl}/search/image`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!r.ok) throw new Error(`rec-svc ${r.status}`);
+  return r.json();
+>>>>>>> origin/main
 }

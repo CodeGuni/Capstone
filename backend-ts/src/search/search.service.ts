@@ -9,9 +9,12 @@ export class SearchService {
   private recUrl = process.env.REC_SVC_URL || "http://localhost:8001";
   private timeoutMs = +(process.env.REC_SVC_TIMEOUT_MS || 8000);
 
+<<<<<<< HEAD
   /**
    * 🔹 Returns mock results (used when mock=1 or for testing)
    */
+=======
+>>>>>>> origin/main
   mock(topK = 10): RecSvcResult {
     return {
       results: Array.from({ length: topK }).map((_, i) => ({
@@ -23,9 +26,12 @@ export class SearchService {
     };
   }
 
+<<<<<<< HEAD
   /**
    * 🔹 Perform image-based search through rec_svc (FastAPI)
    */
+=======
+>>>>>>> origin/main
   async imageSearch(imageUrl: string, topK = 10): Promise<RecSvcResult> {
     const controller = new AbortController();
     const t = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -34,17 +40,26 @@ export class SearchService {
       const res = await fetch(`${this.recUrl}/search/image`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+<<<<<<< HEAD
         body: JSON.stringify({ imageUrl, k: topK }),
         signal: controller.signal,
       });
 
+=======
+        body: JSON.stringify({ imageUrl, topK }),
+        signal: controller.signal,
+      });
+>>>>>>> origin/main
       if (!res.ok) {
         const text = await res.text().catch(() => "");
         throw new BadGatewayException(
           `rec-svc ${res.status}: ${text || res.statusText}`
         );
       }
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
       return (await res.json()) as RecSvcResult;
     } catch (err: any) {
       if (err?.name === "AbortError") {
@@ -61,6 +76,7 @@ export class SearchService {
       clearTimeout(t);
     }
   }
+<<<<<<< HEAD
 
   /**
    * 🔹 Perform text-based search through rec_svc (FastAPI)
@@ -99,4 +115,6 @@ export class SearchService {
       clearTimeout(t);
     }
   }
+=======
+>>>>>>> origin/main
 }
