@@ -1,0 +1,13 @@
+services:
+  rec_svc:
+    build:
+      context: ./services/rec_svc
+    restart: always
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/rec_svc/data:/app/data
+    depends_on:
+      - postgres
+    environment:
+      HF_HUB_ENABLE_HF_TRANSFER: "0"   # 👈 disables xet/hf_transfer

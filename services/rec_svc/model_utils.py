@@ -1,13 +1,14 @@
 # model_utils.py
 import torch
 from PIL import Image
-from transformers import CLIPProcessor, CLIPModel
+from transformers import CLIPModel, CLIPProcessor
+import torch, numpy as np
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+MODEL_DIR = "/app/models/clip-vit-base-patch32"   # path inside container
 
-# Load CLIP model and processor
-model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
-processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+model = CLIPModel.from_pretrained(MODEL_DIR, local_files_only=True).to(device)
+processor = CLIPProcessor.from_pretrained(MODEL_DIR, local_files_only=True)
 
 def get_image_embedding(image_input):
     """

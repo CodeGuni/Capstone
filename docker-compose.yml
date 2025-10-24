@@ -1,7 +1,8 @@
+version: "3.9"
+
 services:
   postgres:
     image: postgres:16
-    container_name: postgres_capstone
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -11,30 +12,44 @@ services:
       - "5432:5432"
     volumes:
       - pg:/var/lib/postgresql/data
+    networks:
+      default:
+        aliases:
+          - postgres_capstone   # backend can use this hostname inside Docker
 
   redis:
     image: redis:7
-    container_name: redis_capstone
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      default:
+        aliases:
+          - redis_capstone      # backend can use this hostname inside Docker
 
   rec_svc:
     build:
       context: ./services/rec_svc
-    container_name: rec_svc
     restart: always
     ports:
       - "8001:8001"
     volumes:
       - ./services/rec_svc/data:/app/data
+      - hf_cache:/root/.cache/huggingface    # ✅ persist model cache for HF models
     depends_on:
       - postgres
+    environment:
+      HF_HUB_ENABLE_HF_TRANSFER: "0"         # ✅ disable xet/CAS transport
+      HF_HUB_DISABLE_TELEMETRY: "1"          # optional
+      # HF_ENDPOINT: "https://huggingface.co" # optional: force default endpoint
+    networks:
+      default:
+        aliases:
+          - rec_svc                           # match what backend uses in .env
 
   backend:
     build:
       context: ./backend-ts
-    container_name: backend_ts
     restart: always
     env_file:
       - ./backend-ts/.env
@@ -49,6 +64,13 @@ services:
         npx prisma migrate deploy &&
         npm run start:prod
       "
+    networks:
+      - default
 
 volumes:
   pg:
+  hf_cache:
+
+networks:
+  default:
+    name: capstone_fresh_net    # unique network name; avoids conflicts
