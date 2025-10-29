@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:16
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: 2519
       POSTGRES_DB: aifs
     ports: ["5432:5432"]
     volumes: [pg:/var/lib/postgresql/data]
