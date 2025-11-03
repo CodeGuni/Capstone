@@ -1,1 +1,10 @@
+# Python venv
+rec-svc/venv/
+venv/
+
+# Node modules
+backend-ts/node_modules/
 node_modules/
+
+# Environment files
+*.env
