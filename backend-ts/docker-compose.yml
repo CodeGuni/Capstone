@@ -1,14 +1,50 @@
-version: '3.9'
+version: "3.9"
+
 services:
   postgres:
     image: postgres:16
+    container_name: postgres
     environment:
       POSTGRES_PASSWORD: 2519
       POSTGRES_DB: aifs
-    ports: ["5432:5432"]
-    volumes: [pg:/var/lib/postgresql/data]
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
   redis:
     image: redis:7
-    ports: ["6379:6379"]
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  rec-svc:
+    build: ./rec-svc
+    container_name: rec-svc
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./rec-svc/data/images:/app/data/images
+    restart: unless-stopped
+
+  backend:
+    build: ./backend-ts
+    container_name: backend
+    env_file:
+      - ./backend-ts/.env
+    environment:
+      DATABASE_URL: "postgresql://postgres:2519@postgres:5432/aifs?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      REC_SVC_URL: "http://rec-svc:8001"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+      - rec-svc
+    restart: unless-stopped
+
 volumes:
-  pg: {}
+  pg_data:

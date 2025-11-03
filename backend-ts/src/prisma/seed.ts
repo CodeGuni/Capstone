@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 console.log('▶ starting seed...');
 console.log('▶ DB URL present:', !!process.env.DATABASE_URL);
