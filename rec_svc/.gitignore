@@ -1,4 +1,3 @@
-# Python venv
 @"
 # Python / venv
 rec_svc/.venv/
@@ -12,11 +11,3 @@ rec_svc/__pycache__/
 # Optional: local test images
 rec_svc/catalog/
 "@ | Out-File -Encoding utf8 .gitignore
-
-
-# Node modules
-backend-ts/node_modules/
-node_modules/
-
-# Environment files
-*.env
