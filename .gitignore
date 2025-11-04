@@ -8,5 +8,4 @@ rec-svc/venv/
 backend-ts/node_modules/
 node_modules/
 
-# Environment files
-*.env
+
