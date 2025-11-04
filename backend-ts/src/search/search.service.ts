@@ -20,46 +20,51 @@ export class SearchService {
     };
   }
 
+  // ✅ IMAGE-ONLY SEARCH (/search/image)
   async imageSearch(imageUrl: string, topK = 10): Promise<RecSvcResult> {
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), this.timeoutMs);
-
-  try {
-    // 🔥 CHANGED ENDPOINT: /search/hybrid
-    const res = await fetch(`${this.recUrl}/search/hybrid`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-
-      // 🔥 CHANGED BODY KEYS: imageUrl + topK
-      body: JSON.stringify({ imageUrl, topK }),
-
-      signal: controller.signal,
-    });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new BadGatewayException(
-        `rec-svc ${res.status}: ${text || res.statusText}`
-      );
-    }
-    return (await res.json()) as RecSvcResult;
-
-  } catch (err: any) {
-    if (err?.name === "AbortError") {
-      throw new BadGatewayException(
-        `rec-svc timeout after ${this.timeoutMs}ms`
-      );
-    }
-
-    // 🔥 CHANGED ERROR MESSAGE TO SHOW /search/hybrid
-    throw new BadGatewayException(
-      `rec-svc unreachable (${this.recUrl}/search/hybrid): ${
-        err?.message || err
-      }`
-    );
-
-  } finally {
-    clearTimeout(t);
+    return this._callRecSvc("/search/image", { imageUrl, topK });
   }
-}
+
+  // ✅ HYBRID SEARCH (/search/hybrid)
+  async hybridSearch(imageUrl: string, topK = 10): Promise<RecSvcResult> {
+    return this._callRecSvc("/search/hybrid", { imageUrl, topK });
+  }
+
+  // 🔥 SHARED INTERNAL REQUEST HANDLER
+  private async _callRecSvc(endpoint: string, payload: object): Promise<RecSvcResult> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      const res = await fetch(`${this.recUrl}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new BadGatewayException(
+          `rec-svc ${res.status} ${endpoint}: ${text || res.statusText}`
+        );
+      }
+
+      return (await res.json()) as RecSvcResult;
+
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        throw new BadGatewayException(
+          `rec-svc timeout after ${this.timeoutMs}ms (${endpoint})`
+        );
+      }
+
+      throw new BadGatewayException(
+        `rec-svc unreachable (${this.recUrl}${endpoint}): ${err?.message || err}`
+      );
+
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
 }
