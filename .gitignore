@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python venv should never be tracked
 rec-svc/venv/
 **/__pycache__/
@@ -9,3 +10,6 @@ backend-ts/node_modules/
 node_modules/
 
 
+=======
+node_modules/
+>>>>>>> 91a16942160d47dfadf241795dde0cff6593b312

@@ -1,10 +1,17 @@
 {
   "name": "backend-ts",
   "private": true,
+<<<<<<< HEAD
   "scripts": {
     "start": "tsx src/main.ts",
     "start:dev": "tsx watch src/main.ts",
     "start:prod": "NODE_ENV=production tsx src/main.ts",
+=======
+  "type": "module",
+  "scripts": {
+    "start": "node dist/main.js",
+    "start:dev": "tsx watch src/main.ts",
+>>>>>>> 91a16942160d47dfadf241795dde0cff6593b312
     "build": "tsc -p tsconfig.json",
     "prisma:gen": "prisma generate --schema src/prisma/schema.prisma",
     "prisma:push": "prisma db push --schema src/prisma/schema.prisma",
@@ -32,8 +39,13 @@
     "@paypal/checkout-server-sdk": "^1.0.3",
     "@prisma/client": "^5.22.0",
     "@types/bcrypt": "^6.0.0",
+<<<<<<< HEAD
     "axios": "^1.13.1",
     "bcryptjs": "^3.0.2",
+=======
+    "axios": "^1.12.2",
+    "bcrypt": "^5.1.1",
+>>>>>>> 91a16942160d47dfadf241795dde0cff6593b312
     "bullmq": "^5.7.11",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",

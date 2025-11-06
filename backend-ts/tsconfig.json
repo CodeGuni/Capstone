@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
     "module": "commonjs",
     "target": "es2019",
     "lib": ["es2019", "dom"],
@@ -18,4 +19,10 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
+=======
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false
+  }
+>>>>>>> 91a16942160d47dfadf241795dde0cff6593b312
 }
