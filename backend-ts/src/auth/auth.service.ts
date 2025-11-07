@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -14,9 +14,8 @@ export class AuthService {
     try {
       const email = dto.email.toLowerCase();
 
-      const client: any = (this.prisma as any).user
-        ? (this.prisma as any)
-        : (this.prisma as any).client;
+      // some PrismaService extend PrismaClient, others wrap it; support both:
+      const client: any = (this.prisma as any).user ? (this.prisma as any) : (this.prisma as any).client;
 
       const user = await client.user.findUnique({ where: { email } });
       if (!user?.passwordHash) throw new UnauthorizedException('Invalid credentials');
@@ -44,9 +43,7 @@ export class AuthService {
   async register(dto: { email: string; password: string; role?: 'admin' | 'user' }) {
     const email = dto.email.toLowerCase();
     const hash = await bcrypt.hash(dto.password, 10);
-    const client: any = (this.prisma as any).user
-      ? (this.prisma as any)
-      : (this.prisma as any).client;
+    const client: any = (this.prisma as any).user ? (this.prisma as any) : (this.prisma as any).client;
 
     const user = await client.user.upsert({
       where: { email },
@@ -56,4 +53,3 @@ export class AuthService {
     return { id: user.id, email: user.email, role: user.role };
   }
 }
-
