@@ -1,23 +1,13 @@
-FROM node:18-bullseye
-
+FROM node:20-bookworm-slim
 WORKDIR /app
 
-# Copy package files first
+# (optional) openssl for Prisma native binaries
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy source code
 COPY . .
+RUN npm run build && npx prisma generate
 
-# ✅ Copy .env into container
-COPY .env .env
-
-# Generate Prisma client
-RUN npx prisma generate --schema src/prisma/schema.prisma
-
-EXPOSE 3000
-
-# Start the app
-CMD ["npm", "start"]
+CMD ["node","dist/main.js"]

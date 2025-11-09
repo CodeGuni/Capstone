@@ -1,16 +1,41 @@
+version: "3.9"
+
 services:
+  # ---- ML microservice (FastAPI) ----
+  rec_svc:
+    build:
+      context: ./rec_svc
+      dockerfile: Dockerfile
+    container_name: rec_svc
+    environment:
+      - MODEL_NAME=openai/clip-vit-base-patch32
+      - DATA_DIR=/data
+    volumes:
+      - recdata:/data
+      - ./rec_svc/catalog:/app/catalog
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  # ---- Postgres ----
   postgres:
-    image: postgres:16
+    image: postgres:15
     container_name: postgres
     environment:
-      POSTGRES_PASSWORD: 2519
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "2519"
       POSTGRES_DB: aifs
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aifs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
+  # ---- Redis ----
   redis:
     image: redis:7
     container_name: redis
@@ -18,36 +43,26 @@ services:
       - "6379:6379"
     restart: unless-stopped
 
-  rec-svc:
-    build: ./rec-svc
-    container_name: rec-svc
-    ports:
-      - "8001:8001"
-    volumes:
-      - ./rec-svc/data/images:/app/data/images
-    restart: unless-stopped
-
-  backend:   # ✅ FIXED — now correctly aligned
-    build: ./backend-ts
+  # ---- NestJS backend ----
+  backend:
+    build:
+      context: ./backend-ts        # IMPORTANT: points to your NestJS folder
+      dockerfile: Dockerfile
     container_name: backend
     env_file:
-      - ./backend-ts/.env
+      - ./backend-ts/.env          # make sure .env exists (see next step)
     environment:
-      REC_SVC_URL: "http://rec-svc:8001"
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 2519
-      POSTGRES_DB: aifs
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    ports:
-      - "3000:3000"
+      # Optional overrides; .env usually covers these:
+      - NODE_ENV=production
+      - REC_SVC_URL=http://rec_svc:8001
     depends_on:
-      - rec-svc
       - postgres
       - redis
+      - rec_svc
+    ports:
+      - "3000:3000"
     restart: unless-stopped
 
 volumes:
-  pg_data:
+  pgdata:
+  recdata:
