@@ -19,35 +19,38 @@ export class SearchService {
       })),
     };
   }
-// src/search/search.service.ts
-async imageSearch(imageUrl: string, topK = 10): Promise<RecSvcResult> {
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), this.timeoutMs);
 
-  try {
-    const res = await fetch(`${this.recUrl}/search/hybrid`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // ✅ send k, optionally pass q if you like
-      body: JSON.stringify({ imageUrl, k: topK }),
-      signal: controller.signal,
-    });
+  async imageSearch(imageUrl: string, topK = 10): Promise<RecSvcResult> {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), this.timeoutMs);
 
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new BadGatewayException(`rec-svc ${res.status}: ${text || res.statusText}`);
+    try {
+      const res = await fetch(`${this.recUrl}/search/image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl, topK }),
+        signal: controller.signal,
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new BadGatewayException(
+          `rec-svc ${res.status}: ${text || res.statusText}`
+        );
+      }
+      return (await res.json()) as RecSvcResult;
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        throw new BadGatewayException(
+          `rec-svc timeout after ${this.timeoutMs}ms`
+        );
+      }
+      throw new BadGatewayException(
+        `rec-svc unreachable (${this.recUrl}/search/image): ${
+          err?.message || err
+        }`
+      );
+    } finally {
+      clearTimeout(t);
     }
-    return (await res.json()) as RecSvcResult;
-  } catch (err: any) {
-    if (err?.name === "AbortError") {
-      throw new BadGatewayException(`rec-svc timeout after ${this.timeoutMs}ms`);
-    }
-    throw new BadGatewayException(
-      `rec-svc unreachable (${this.recUrl}/search/hybrid): ${err?.message || err}`
-    );
-  } finally {
-    clearTimeout(t);
   }
-}
-
 }
