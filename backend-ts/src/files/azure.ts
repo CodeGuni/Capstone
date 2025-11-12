@@ -30,7 +30,7 @@ export async function presignUpload(filename: string, contentType: string) {
     const expiresOn = new Date(Date.now() + 15 * 60 * 1000);
 
     // For upload 
-    const permissions = BlobSASPermissions.parse('cw');
+    const permissions = BlobSASPermissions.parse('rcw');
 
     const sas = generateBlobSASQueryParameters(
       {
