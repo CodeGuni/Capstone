@@ -13,7 +13,15 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true })
   );
   app.setGlobalPrefix("api");
-/*
+  await app.register((await import("@fastify/cors")).default, {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+    maxAge: 86400,
+  });
+
+  /*
   // Swagger
   const cfg = new DocumentBuilder()
     .setTitle("AI Fashion Studio – Gateway")
