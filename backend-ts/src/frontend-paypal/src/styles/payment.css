@@ -1,0 +1,495 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* Container */
+.payment-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main Card */
+.payment-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+  width: 100%;
+}
+
+/* Header */
+.payment-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 2rem;
+}
+
+.payment-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.payment-header p {
+  color: #6b7280;
+  font-size: 0.9375rem;
+}
+
+/* Plan Card */
+.plan-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.plan-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.plan-info h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.plan-info p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.plan-price {
+  text-align: right;
+}
+
+.price-amount {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.price-currency {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Buyer Info */
+.buyer-info {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.buyer-info h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.buyer-email {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1f2937;
+  font-size: 0.9375rem;
+}
+
+.email-icon {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* Buttons */
+.pay-button {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.pay-button:hover {
+  background: #1d4ed8;
+}
+
+.pay-button:active {
+  background: #1e40af;
+}
+
+/* Step Indicators */
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.step-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.step-label {
+  font-size: 0.9375rem;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+/* Step States */
+.step-pending .step-icon {
+  background: #ffffff;
+  border-color: #d1d5db;
+}
+
+.step-active .step-icon {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.step-active .step-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background: white;
+  border-radius: 50%;
+  animation: processing 1.2s ease-in-out infinite;
+}
+
+@keyframes processing {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.step-active .step-label {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.step-completed .step-icon {
+  background: #059669;
+  border-color: #059669;
+}
+
+.step-completed .step-icon::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.step-completed .step-label {
+  color: #374151;
+}
+
+.step-error .step-icon {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.step-error .step-icon::after {
+  content: '✕';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.error-icon {
+  font-size: 3rem;
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.error-state h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  color: #dc2626;
+  margin-bottom: 1.5rem;
+  font-size: 0.9375rem;
+}
+
+.retry-button {
+  background: #2563eb;
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.retry-button:hover {
+  background: #1d4ed8;
+}
+
+/* Success State */
+.success-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.success-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #059669;
+  color: white;
+  font-size: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.success-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.success-header p {
+  color: #6b7280;
+  font-size: 0.9375rem;
+}
+
+/* Receipt Details */
+.receipt-details {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.receipt-details h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.receipt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+}
+
+.receipt-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.receipt-label {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.receipt-value {
+  font-size: 0.9375rem;
+  color: #1f2937;
+  word-break: break-all;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.status-completed {
+  color: #059669;
+  font-weight: 600;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.download-button,
+.resend-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.download-button {
+  background: #2563eb;
+  color: white;
+}
+
+.download-button:hover {
+  background: #1d4ed8;
+}
+
+.resend-button {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.resend-button:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.resend-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Demo Notice */
+.demo-notice {
+  text-align: center;
+  margin-top: 2rem;
+  color: #6b7280;
+  font-size: 0.8125rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .payment-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .payment-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .plan-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .plan-price {
+    text-align: left;
+  }
+
+  .receipt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-container {
+    padding: 1rem;
+  }
+
+  .payment-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .plan-card {
+    padding: 1.25rem;
+  }
+
+  .payment-header {
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .payment-header h1 {
+    font-size: 1.375rem;
+  }
+
+  .plan-info h2 {
+    font-size: 1rem;
+  }
+
+  .price-amount {
+    font-size: 1.625rem;
+  }
+}
