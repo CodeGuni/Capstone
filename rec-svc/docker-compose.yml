@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  rec-svc:
+    build: .
+    container_name: rec-svc
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./data/images:/app/data/images   # so your images persist + you can update
+    environment:
+      TOPK_DEFAULT: 5
+      ADMIN_TOKEN: "changeme"
+    restart: unless-stopped
