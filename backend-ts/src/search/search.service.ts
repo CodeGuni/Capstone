@@ -8,7 +8,9 @@ type RecSvcResult = {
 export class SearchService {
   private recUrl = process.env.REC_SVC_URL || "http://localhost:8001";
   private timeoutMs = +(process.env.REC_SVC_TIMEOUT_MS || 8000);
+  private allowMock = process.env.SEARCH_ALLOW_MOCK === "1";
 
+  // ✅ MOCK for UI demo mode
   mock(topK = 10): RecSvcResult {
     return {
       results: Array.from({ length: topK }).map((_, i) => ({
@@ -20,37 +22,55 @@ export class SearchService {
     };
   }
 
-  async imageSearch(imageUrl: string, topK = 10): Promise<RecSvcResult> {
+  private async call(endpoint: string, payload: object): Promise<RecSvcResult> {
+    if (this.allowMock) return this.mock(payload["topK"] ?? 10);
+
     const controller = new AbortController();
-    const t = setTimeout(() => controller.abort(), this.timeoutMs);
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
 
     try {
-      const res = await fetch(`${this.recUrl}/search/image`, {
+      const res = await fetch(`${this.recUrl}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl, topK }),
+        body: JSON.stringify(payload),
         signal: controller.signal,
       });
+
+      const json = await res.json().catch(() => null);
+
       if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new BadGatewayException(
-          `rec-svc ${res.status}: ${text || res.statusText}`
-        );
+        throw new BadGatewayException({
+          statusCode: res.status,
+          message: json?.message || res.statusText || "rec-svc error",
+        });
       }
-      return (await res.json()) as RecSvcResult;
+
+      return json as RecSvcResult;
     } catch (err: any) {
       if (err?.name === "AbortError") {
-        throw new BadGatewayException(
-          `rec-svc timeout after ${this.timeoutMs}ms`
-        );
+        throw new BadGatewayException({
+          statusCode: 500,
+          message: `rec-svc timeout after ${this.timeoutMs}ms`,
+        });
       }
-      throw new BadGatewayException(
-        `rec-svc unreachable (${this.recUrl}/search/image): ${
-          err?.message || err
-        }`
-      );
+      throw new BadGatewayException({
+        statusCode: 500,
+        message: err?.message || "rec-svc unreachable",
+      });
     } finally {
-      clearTimeout(t);
+      clearTimeout(timeout);
     }
+  }
+
+  async imageSearch(imageUrl: string, topK = 10) {
+    return this.call("/search/image", { imageUrl, topK });
+  }
+
+  async textSearch(text: string, topK = 10) {
+    return this.call("/search/text", { text, topK });
+  }
+
+  async hybridSearch(text: string | null, imageUrl: string | null, alpha = 0.5, topK = 10) {
+    return this.call("/search/hybrid", { text, imageUrl, alpha, topK });
   }
 }

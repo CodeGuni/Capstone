@@ -1,0 +1,24 @@
+### health
+GET http://localhost:8001/health
+
+### image
+POST http://localhost:8001/search/image
+content-type: application/json
+
+{ "imageUrl": "dress_yellow_ruffles.jpg", "topK": 5 }
+
+### text
+POST http://localhost:8001/search/text
+content-type: application/json
+
+{ "text": "yellow sundress with ruffles", "topK": 5 }
+
+### hybrid
+POST http://localhost:8001/search/hybrid
+content-type: application/json
+
+{ "text": "yellow sundress", "imageUrl": "dress_yellow_ruffles.jpg", "alpha": 0.4, "topK": 5 }
+
+### reindex
+POST http://localhost:8001/admin/reindex
+Authorization: Bearer dev-admin-token

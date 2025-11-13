@@ -1,0 +1,86 @@
+[
+  {
+    "id": "item-0000",
+    "path": "data/images/dress1.jpg"
+  },
+  {
+    "id": "item-0001",
+    "path": "data/images/dress2.jpg"
+  },
+  {
+    "id": "item-0002",
+    "path": "data/images/dress3.jpg"
+  },
+  {
+    "id": "item-0003",
+    "path": "data/images/dress4.jpg"
+  },
+  {
+    "id": "item-0004",
+    "path": "data/images/dress5.jpg"
+  },
+  {
+    "id": "item-0005",
+    "path": "data/images/image.png"
+  },
+  {
+    "id": "item-0006",
+    "path": "data/images/jeans1.jpg"
+  },
+  {
+    "id": "item-0007",
+    "path": "data/images/jeans2.jpg"
+  },
+  {
+    "id": "item-0008",
+    "path": "data/images/jeans3.jpg"
+  },
+  {
+    "id": "item-0009",
+    "path": "data/images/jeans4.jpg"
+  },
+  {
+    "id": "item-0010",
+    "path": "data/images/jeans5.jpg"
+  },
+  {
+    "id": "item-0011",
+    "path": "data/images/skirts1.jpg"
+  },
+  {
+    "id": "item-0012",
+    "path": "data/images/skirts2.jpg"
+  },
+  {
+    "id": "item-0013",
+    "path": "data/images/skirts3.jpg"
+  },
+  {
+    "id": "item-0014",
+    "path": "data/images/skirts4.jpg"
+  },
+  {
+    "id": "item-0015",
+    "path": "data/images/skirts5.jpg"
+  },
+  {
+    "id": "item-0016",
+    "path": "data/images/sweater1.jpg"
+  },
+  {
+    "id": "item-0017",
+    "path": "data/images/sweater2.jpg"
+  },
+  {
+    "id": "item-0018",
+    "path": "data/images/sweater3.jpg"
+  },
+  {
+    "id": "item-0019",
+    "path": "data/images/sweater4.jpg"
+  },
+  {
+    "id": "item-0020",
+    "path": "data/images/sweater5.jpg"
+  }
+]

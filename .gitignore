@@ -1,1 +1,11 @@
+# Python venv should never be tracked
+rec-svc/venv/
+**/__pycache__/
+*.pyc
+
+
+# Node modules
+backend-ts/node_modules/
 node_modules/
+
+
