@@ -1,0 +1,12 @@
+services:
+  regress-svc:
+    build: .
+    image: regress-svc
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./data/images:/app/data/images
+      - ./artifacts:/app/artifacts
+    environment:
+      ADMIN_TOKEN: "changeme"
+    restart: unless-stopped
