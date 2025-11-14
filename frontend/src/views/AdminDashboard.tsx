@@ -46,9 +46,14 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         <div className="action-buttons">
-          <a className="download-button" href="/pay">
-            Go to Payments
-          </a>
+          <a
+  className="download-button"
+  href="http://localhost:5173/"   
+  target="_blank"
+  rel="noreferrer"
+>
+  Go to Payments
+</a>
           <button className="retry-button" onClick={logout}>
             Log Out
           </button>
