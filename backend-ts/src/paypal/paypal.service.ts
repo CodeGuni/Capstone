@@ -1,8 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import axios from "axios";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class PaypalService {
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+  ) {}
   private readonly base = process.env.BASE_URL ?? "http://localhost:3000";
   private readonly env = (process.env.PAYPAL_ENV ?? "sandbox").toLowerCase();
   private get apiRoot() {
@@ -89,5 +93,32 @@ export class PaypalService {
       }
     );
     return r.data;
+  }
+
+  async getTotalRevenue(): Promise<number> {
+    try {
+      const payments = await this.prisma.payment.findMany({
+        where: {
+          status: 'COMPLETED',
+        },
+        select: {
+          amount: true,
+        },
+      });
+
+      const total = payments.reduce((sum, payment) => {
+        return sum + Number(payment.amount);
+      }, 0);
+
+      return total;
+    } catch (e: any) {
+      console.error('[PaypalService.getTotalRevenue] ERROR:', e?.message);
+      // return 0 if not there
+      if (e?.message?.includes('payment') || e?.message?.includes('model')) {
+        console.warn('Payment model may not exist in database yet. Run: npm run prisma:gen && npm run prisma:push');
+        return 0;
+      }
+      throw e;
+    }
   }
 }

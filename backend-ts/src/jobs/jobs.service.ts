@@ -68,5 +68,32 @@ export class JobsService {
       },
     });
   }
+
+  async countAllJobs(): Promise<number> {
+    try {
+      return await this.prisma.job.count();
+    } catch (e: any) {
+      console.error('[JobsService.countAllJobs] ERROR:', e?.message);
+      return 0;
+    }
+  }
+
+  async countJobsToday(): Promise<number> {
+    try {
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      return await this.prisma.job.count({
+        where: {
+          createdAt: {
+            gte: startOfToday,
+          },
+        },
+      });
+    } catch (e: any) {
+      console.error('[JobsService.countJobsToday] ERROR:', e?.message);
+      return 0;
+    }
+  }
 }
 
