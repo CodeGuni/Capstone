@@ -14,4 +14,39 @@ model User {
   passwordHash String
   role         String   @default("user")
   createdAt    DateTime @default(now())
+  jobs         Job[]
+}
+
+enum JobType {
+  OUTFIT
+  VTO
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Job {
+  id        String    @id @default(cuid())
+  type      JobType
+  status    JobStatus @default(PENDING)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  orderId     String   @unique
+  captureId   String?
+  status      String   // COMPLETED, PENDING, etc.
+  amount      Decimal  @db.Decimal(10, 2)
+  currency    String   @default("CAD")
+  userId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
