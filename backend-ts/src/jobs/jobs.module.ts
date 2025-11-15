@@ -1,5 +1,12 @@
 import './hello.worker';
 import { Module } from '@nestjs/common';
 import { JobsController } from './jobs.controller';
-@Module({ controllers:[JobsController] })
+import { JobsService } from './jobs.service';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Module({
+  controllers: [JobsController],
+  providers: [JobsService, PrismaService],
+  exports: [JobsService],
+})
 export class JobsModule {}
