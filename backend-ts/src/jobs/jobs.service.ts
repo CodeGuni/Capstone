@@ -95,5 +95,63 @@ export class JobsService {
       return 0;
     }
   }
+
+  async countJobsByUser(userId: string): Promise<number> {
+    try {
+      return await this.prisma.job.count({
+        where: { userId },
+      });
+    } catch (e: any) {
+      console.error('[JobsService.countJobsByUser] ERROR:', e?.message);
+      return 0;
+    }
+  }
+
+  async findLatestJobForUser(userId: string): Promise<{ createdAt: Date } | null> {
+    try {
+      const job = await this.prisma.job.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: { createdAt: true },
+      });
+      return job;
+    } catch (e: any) {
+      console.error('[JobsService.findLatestJobForUser] ERROR:', e?.message);
+      return null;
+    }
+  }
+
+  async findJobsWithFilters(params: {
+    status?: JobStatus;
+    type?: JobType;
+    skip?: number;
+    take?: number;
+    userId?: string;
+  }): Promise<any[]> {
+    try {
+      const where: any = {};
+      if (params.status) where.status = params.status;
+      if (params.type) where.type = params.type;
+      if (params.userId) where.userId = params.userId;
+
+      return await this.prisma.job.findMany({
+        where,
+        skip: params.skip ?? 0,
+        take: params.take ?? 10,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+        },
+      });
+    } catch (e: any) {
+      console.error('[JobsService.findJobsWithFilters] ERROR:', e?.message);
+      throw e;
+    }
+  }
 }
 

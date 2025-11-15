@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Inject } from '@nestjs/common';
+import { Controller, Get, UseGuards, Inject, Query, Param, NotFoundException } from '@nestjs/common';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -37,5 +37,43 @@ export class AdminController {
       jobsToday,
       totalRevenue,
     };
+  }
+
+  @Get('users')
+  @Roles('admin')
+  async getUsers(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+  ) {
+    const pageNum = page ? parseInt(page, 10) : 1;
+    const limitNum = limit ? parseInt(limit, 10) : 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    const result = await this.usersService.findUsersWithStats({
+      skip,
+      take: limitNum,
+      search,
+    });
+
+    return {
+      users: result.users,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total: result.total,
+        totalPages: Math.ceil(result.total / limitNum),
+      },
+    };
+  }
+
+  @Get('users/:id')
+  @Roles('admin')
+  async getUserById(@Param('id') id: string) {
+    const user = await this.usersService.findUserWithStatsById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 }
